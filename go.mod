@@ -1,10 +1,10 @@
-module houses-data
+module church-calendar
 
 go 1.21.6
 
 require (
 	github.com/dslipak/pdf v0.0.2
-	github.com/gocolly/colly/v2 v2.1.0
+	github.com/gocolly/colly v1.2.0
 	github.com/joho/godotenv v1.5.1
 	golang.org/x/oauth2 v0.16.0
 	google.golang.org/api v0.157.0

@@ -3,8 +3,8 @@ package googleapi
 import (
 	"context"
 	"fmt"
-	funcs "houses-data/basicFunctions"
-	pattern "houses-data/patternRecogniser"
+	funcs "church-calendar/basicFunctions"
+	pattern "church-calendar/patternRecogniser"
 	"log"
 	"net/http"
 	"strings"
@@ -13,6 +13,10 @@ import (
 	"google.golang.org/api/calendar/v3"
 	"google.golang.org/api/option"
 )
+
+type Date struct {
+	date time.Time
+}
 
 func newCalendarService(ctx context.Context, client *http.Client) *calendar.Service {
 	srv, err := calendar.NewService(ctx, option.WithHTTPClient(client))

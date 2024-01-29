@@ -1,20 +1,21 @@
 package main
 
 import (
+	funcs "church-calendar/basicFunctions"
+	googleapi "church-calendar/calendarInterface"
+	pattern "church-calendar/patternRecogniser"
 	"fmt"
-	funcs "houses-data/basicFunctions"
-	googleapi "houses-data/calendarInterface"
-	pattern "houses-data/patternRecogniser"
 	"strings"
 	"time"
 
-	"github.com/gocolly/colly/v2"
+	"github.com/gocolly/colly"
 )
 
 func main() {
 
 	now := time.Now().Local()
 
+	funcs.LoadEnvVariables()
 	var Id string
 
 	dirPath := "unparsedDocuments"

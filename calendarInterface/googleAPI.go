@@ -1,31 +1,26 @@
 package googleapi
 
 import (
+	pattern "church-calendar/patternRecogniser"
 	"context"
-	funcs "houses-data/basicFunctions"
-	pattern "houses-data/patternRecogniser"
 	"log"
+
+	// "log"
+
 	"time"
 	//"golang.org/x/oauth2/google"
 	//"google.golang.org/api/option"
 )
 
 
-type Date struct {
-	date time.Time
-}
+
 
 var zone, _ = time.Now().Local().Zone()
 
-const (
-	tokFile = "token.json"
-)
-
+const tokFile = "json/token.json"
 
 func CallAPI(month pattern.Month) {
 
-	funcs.LoadEnvVariables()
-	
     ctx := context.Background()
 
 	creds := ReadCredentials()
