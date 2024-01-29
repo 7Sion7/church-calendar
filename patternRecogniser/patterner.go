@@ -1,12 +1,12 @@
 package pattern
 
 import (
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
 	"time"
 )
-
 
 type Month struct{
 	Month string `json:"month"`
@@ -25,37 +25,27 @@ type Event struct {
 	Event          string `json:"event"`
 }
 
-
-var sortedData []Month
-
-var daysOfTheMonth Month
-
-var separatedByDay [][]string
-
-func FormatData(text string) []Month{
-
-	calendar := GetCalendar(strings.Fields(text)) //Removing White Spaces and separating by words
-	SeparateByDay(0, calendar)
-	for _, dayInfo := range separatedByDay { //Sort Data of Each Day
-		SortDayInfo(dayInfo)
+func FormatData(text string) Month {
+	calendar, newMonth := GetCalendar(strings.Fields(text))
+	separatedByDay := SeparateByDay(0, calendar)
+	for _, dayInfo := range separatedByDay {
+		SortDayInfo(dayInfo, &newMonth)
 	}
-	sortedData = append(sortedData, daysOfTheMonth)
-	return sortedData
+	return newMonth
 }
 
-func SortDayInfo(dayInfo []string) {
+func SortDayInfo(dayInfo []string, month *Month) {
 	var day Day
-	
-
 	var commemorated_saint []string
+
 	for index, info := range dayInfo {
 		_, err := strconv.Atoi(info)
 		if err == nil {
-			day.DayOfTheMonth = info //Add Day as Number
+			day.DayOfTheMonth = info
 			continue
 		}
 		if isDayOfWeek(info) {
-			day.WeekDay = info //Add Day as weekDay
+			day.WeekDay = info
 			continue
 		}
 		if !isHour(info) {
@@ -67,7 +57,8 @@ func SortDayInfo(dayInfo []string) {
 			break
 		}
 	}
-	daysOfTheMonth.Days = append(daysOfTheMonth.Days, day)
+
+	month.Days = append(month.Days, day)
 }
 
 func GetEventsOfDay(slice []string) []Event{
@@ -95,33 +86,37 @@ func GetEventsOfDay(slice []string) []Event{
 	return events
 }
 
-func SeparateByDay(index int, calendar []string)  {
-	_, err := strconv.Atoi(calendar[index])
-	if err == nil && index != 0{
-		separatedByDay = append(separatedByDay, calendar[:index])
-		SeparateByDay(0, calendar[index:])
-	} else if index == len(calendar)-1 {
-		separatedByDay = append(separatedByDay, calendar)
-	} else {
-		SeparateByDay(index+1, calendar)
-	}
+func SeparateByDay(index int, calendar []string)  [][]string{
+	var separated [][]string
+    _, err := strconv.Atoi(calendar[index])
+    if err == nil && index != 0 {
+        separated = append(separated, calendar[:index])
+        separated = append(separated, SeparateByDay(0, calendar[index:])...)
+    } else if index == len(calendar)-1 {
+        separated = append(separated, calendar)
+    } else {
+        separated = append(separated, SeparateByDay(index+1, calendar)...)
+    }
 
-	
+    return separated
 }
 
 
-func GetCalendar(words []string) []string{
+func GetCalendar(words []string) ([]string, Month){
 	indexOfStartOfCalendar := slices.Index(words, strconv.Itoa(time.Now().Year())) + 1
 	month := words[indexOfStartOfCalendar-2]
 	month = string(month[0]) + strings.ToLower(month[1:]) //Basically to title func
-	daysOfTheMonth.Month = month
+	newMonth := Month{
+		Month: month,
+	}
 	
 	calendar := words[indexOfStartOfCalendar:]
-	return calendar
+	return calendar, newMonth
 }
 
 func isHour(wordAfter string) bool{
-	if strings.Contains(wordAfter, ":" ) {
+	clockForm := regexp.MustCompile(`\b\d{2}:\d{2}\b`)
+	if clockForm.MatchString(wordAfter) {
 		return true
 	}
 

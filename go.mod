@@ -3,9 +3,9 @@ module houses-data
 go 1.21.6
 
 require (
+	github.com/dslipak/pdf v0.0.2
 	github.com/gocolly/colly/v2 v2.1.0
 	github.com/joho/godotenv v1.5.1
-	github.com/ledongthuc/pdf v0.0.0-20240102091924-f3e9b24a5eaa
 	golang.org/x/oauth2 v0.16.0
 	google.golang.org/api v0.157.0
 )
