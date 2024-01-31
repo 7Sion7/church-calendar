@@ -1,6 +1,7 @@
 package pattern
 
 import (
+	"fmt"
 	"regexp"
 	"slices"
 	"strconv"
@@ -67,16 +68,17 @@ func GetEventsOfDay(slice []string) []Event{
 	var indexOfTime int
 	for i, word := range slice {
 		if i == len(slice)-1 {
+			fmt.Println("last timing --> first word", slice[0], "current word:", word, i, slice)
 			events = append(events, Event{
 				HourOfTheEvent: slice[indexOfTime],
 				Event: strings.Join(slice[indexOfTime+1:], " "),
 			})
 			break
 		}
-
 		if isHour(word) && i != 0 {
-			events = append(events, Event{
-				HourOfTheEvent: slice[0],
+			controlSlice := slice[indexOfTime:] //to get the hour of the latest event 
+			events = append(events, Event{		//by removing the event previous one from a slice that does not affect the overall slice 
+				HourOfTheEvent: controlSlice[0],
 				Event: strings.Join(slice[indexOfTime+1:i], " "),
 			})
 			indexOfTime = i
@@ -119,7 +121,6 @@ func isHour(wordAfter string) bool{
 	if clockForm.MatchString(wordAfter) {
 		return true
 	}
-
 	return false
 }
 
